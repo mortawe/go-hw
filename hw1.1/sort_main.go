@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"homework/sort"
+	"sort"
 )
 
 func main() {

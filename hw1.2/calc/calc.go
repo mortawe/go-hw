@@ -10,11 +10,19 @@ import (
 func splitTokens(expr string) ([]string,error) {
 	var tokens [] string
 	curNum := ""
+	bracketsNum := 0
 	for r := range expr {
 		if expr[r] == ' ' {
 			continue
 		}
 		if expr[r] == '(' || expr[r] == ')'{
+			switch expr[r] {
+			case '(' : bracketsNum++
+			case ')' : bracketsNum--
+			}
+			if bracketsNum < 0 {
+				return nil, errors.New("wrong brackets sequence")
+			}
 			if curNum != ""  {
 				tokens = append(tokens, curNum)
 				curNum = ""
@@ -61,7 +69,6 @@ func splitTokens(expr string) ([]string,error) {
 			}
 			return nil, errors.New("wrong input: double dot in number")
 		}
-		fmt.Println(tokens)
 		if expr[r] == '+' || expr[r] == '-' || expr[r] == '/' || expr[r] == '*' {
 			if r >= 1 &&
 				(expr[r-1] == '+' || expr[r-1] == '-' ||
@@ -106,7 +113,7 @@ func calcSimpleExpr(tokens [] string) (string, error){
 			return fmt.Sprintf("%f", left * right), nil
 		case "/":
 			if right == 0.0 {
-				return "", errors.New("div 0")
+				return "", errors.New("division by zero")
 			}
 			return fmt.Sprintf("%f", left / right), nil
 		default:
@@ -199,7 +206,6 @@ func calcInsideBrackets(tokens [] string) (float64, error) {
 func Calculate(expr string) (float64, error){
 
 	tokens, err := splitTokens(expr)
-	fmt.Println(tokens)
 	if err != nil {
 		return 0.0, err
 	}

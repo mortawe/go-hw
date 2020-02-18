@@ -132,17 +132,17 @@ func SortWithFlags(lines[] string, flags Flags) ([]string, error) {
 		compRes := mask[lines[i]] < mask[lines[j]]
 
 		if flags.nPtr {
-			left, err := strconv.Atoi(mask[lines[i]])
-			if err != nil {
-				log.Println(err)
-				return true
+			left, err1 := strconv.Atoi(mask[lines[i]])
+			if err1 != nil {
+				compRes = false
 			}
-			right, err := strconv.Atoi(mask[lines[j]])
-			if err != nil {
-				log.Println(err)
-				return true
+			right, err2 := strconv.Atoi(mask[lines[j]])
+			if err2 != nil {
+				compRes = true
 			}
-			compRes = left < right
+			if err1 == nil && err2 == nil {
+				compRes = left < right
+			}
 		}
 
 		if flags.rPtr {

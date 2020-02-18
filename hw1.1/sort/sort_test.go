@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
-const TestNum = 8
+const TestNum = 9
 
 
 
@@ -68,6 +68,13 @@ func TestOK(t *testing.T) {
 		rPtr: false,
 		oPtr: "test.o",
 		nPtr: false,
+		kPtr: 1,
+	},{
+		fPtr: false,
+		uPtr: false,
+		rPtr: false,
+		oPtr: "test.o",
+		nPtr: true,
 		kPtr: 1,
 	},
 

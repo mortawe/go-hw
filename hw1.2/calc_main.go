@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	calc "homework/calc"
 	"log"
 	"os"
+
+	"hw1.2/calc"
 )
 
 
@@ -17,10 +18,9 @@ func main(){
 		os.Exit(2)
 	}
 
-	res, err := calc.Calculate(flag.Args()[0])
+	res, err := calc.Calculate(flag.Arg(0))
 	if err != nil {
 		log.Println(err)
-		log.Println("Error while reading lines")
 		os.Exit(1)
 	}
 	fmt.Println(res)

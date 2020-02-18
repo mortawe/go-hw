@@ -105,6 +105,12 @@ func TestCalculateOK(t *testing.T) {
 	}
 	assert.Equal(t, 12.5, res)
 
+	res, err = Calculate("-4*5")
+	if err != nil {
+		assert.Fail(t, "возникла ошибочка %s", err)
+	}
+	assert.Equal(t, -20.0, res)
+
 }
 
 func TestCalculateWrongInput(t *testing.T) {
@@ -136,4 +142,6 @@ func TestCalculateWrongInput(t *testing.T) {
 	_, err = Calculate("1/")
 	assert.NotNil(t, err)
 
+	_, err = Calculate("(5+8) * 9 - )1/2( ")
+	assert.NotNil(t, err)
 }
