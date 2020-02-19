@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"sort"
+	"hw1.1/sort"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	sort.SortWithFlags(lines, flags)
+	lines, err = sort.SortWithFlags(lines, flags)
 
 	if sort.WriteResult(lines, flags) != nil {
 		log.Println("Error while writing lines")

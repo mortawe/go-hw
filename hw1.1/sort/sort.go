@@ -88,7 +88,6 @@ func calcMaskWithFlags(st string, flags Flags) (string, error) {
 }
 
 func unify(lines []string, mask map[string]string) []string {
-
 	result := make([]string, len(lines))
 	count := 0
 	if len(lines) > 0 {
