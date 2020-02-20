@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -12,13 +11,16 @@ import (
 
 
 func main(){
-	flag.Parse()
-	if len(flag.Args()) == 0 {
+
+	if len(os.Args) == 0 {
 		log.Println("No input expression specified")
 		os.Exit(2)
 	}
-
-	res, err := calc.Calculate(flag.Arg(0))
+	expr := ""
+	for r := 1; r < len(os.Args); r++ {
+		expr+=os.Args[r]
+	}
+	res, err := calc.Calculate(expr)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)

@@ -7,59 +7,73 @@ import (
 	"strings"
 )
 
+func splitBrackets(tokens *[] string, bracketsNum *int, letter uint8) error {
+	switch letter {
+	case '(' : *bracketsNum++
+	case ')' : *bracketsNum--
+	}
+	if *bracketsNum < 0 {
+		return  errors.New("wrong brackets sequence")
+	}
+
+	if len(*tokens) >= 2 && (*tokens)[len(*tokens)-1] == "-" && (*tokens)[len(*tokens)- 2] == "("{
+		*tokens = append((*tokens)[:len(*tokens) - 1], append([]string{"0"}, (*tokens)[len(*tokens) - 1:]...)...)
+	}
+	if len(*tokens) == 1 && (*tokens)[0] == "-" {
+		*tokens = append( []string{"0"}, *tokens...)
+	}
+
+	*tokens = append(*tokens, string(letter))
+
+	return nil
+}
+
+func splitDigit(tokens *[] string, curNum *string, letter uint8) {
+	okCond := len(*tokens) < 2
+	if len(*tokens) >= 2 {
+		_, err := strconv.ParseFloat((*tokens)[len(*tokens) - 2], 64)
+		if err == nil {
+			okCond = false
+		} else {
+			if (*tokens)[len(*tokens) - 2] == ")" {
+				okCond = false
+			} else {
+				okCond = true
+			}
+		}
+	}
+	if *curNum == "" && okCond {
+		if len(*tokens) > 0 &&
+			( (*tokens)[len(*tokens) - 1] == "-" || (*tokens)[len(*tokens) - 1] == "+" ){
+			*curNum += (*tokens)[len(*tokens) - 1]
+			*tokens = (*tokens)[:len(*tokens) - 1]
+		}
+	}
+	*curNum += string(letter)
+}
+
 func splitTokens(expr string) ([]string,error) {
 	var tokens [] string
 	curNum := ""
 	bracketsNum := 0
+
 	for r := range expr {
 		if expr[r] == ' ' {
 			continue
 		}
-		if expr[r] == '(' || expr[r] == ')'{
-			switch expr[r] {
-			case '(' : bracketsNum++
-			case ')' : bracketsNum--
-			}
-			if bracketsNum < 0 {
-				return nil, errors.New("wrong brackets sequence")
-			}
+		if expr[r] == '(' || expr[r] == ')' {
 			if curNum != ""  {
 				tokens = append(tokens, curNum)
 				curNum = ""
 			}
-
-			if len(tokens) >= 2 && tokens[len(tokens)-1] == "-" && tokens[len(tokens)- 2] == "("{
-				tokens = append(tokens[:len(tokens) - 1], append([]string{"0"}, tokens[len(tokens) - 1:]...)...)
+			err := splitBrackets(&tokens , &bracketsNum , expr[r])
+			if err!=nil {
+				return nil, err
 			}
-			if len(tokens) == 1 && tokens[0] == "-" {
-				tokens = append( []string{"0"}, tokens...)
-			}
-
-			tokens = append(tokens, string(expr[r]))
 			continue
 		}
 		if  _, err := strconv.Atoi(string(expr[r])); err == nil {
-			okCond := len(tokens) < 2
-			if len(tokens) >= 2 {
-				_, err := strconv.ParseFloat(tokens[len(tokens) - 2], 64)
-				if err == nil {
-					okCond = false
-				} else {
-					if tokens[len(tokens) - 2] == ")" {
-						okCond = false
-					} else {
-						okCond = true
-					}
-				}
-			}
-			if curNum == "" && okCond {
-				if len(tokens) > 0 &&
-					( tokens[len(tokens) - 1] == "-" || tokens[len(tokens) - 1] == "+" ){
-					curNum += tokens[len(tokens) - 1]
-					tokens = tokens[:len(tokens) - 1]
-				}
-			}
-			curNum += string(expr[r])
+			splitDigit(&tokens, &curNum, expr[r])
 			continue
 		}
 		if expr[r] == '.' {
