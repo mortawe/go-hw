@@ -7,80 +7,78 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
 const TestNum = 9
 
-
-
 func TestOK(t *testing.T) {
-	
-	flags := []Flags{{
-		fPtr: false,
-		uPtr: false,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: false,
-		kPtr: 1,
-	}, {
-		fPtr: false,
-		uPtr: false,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: false,
-		kPtr: 1,
-	}, {
-		fPtr: true,
-		uPtr: false,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: false,
-		kPtr: 1,
-	}, {
-		fPtr: false,
-		uPtr: false,
-		rPtr: true,
-		oPtr: "test.o",
-		nPtr: false,
-		kPtr: 1,
-	},  {
-		fPtr: false,
-		uPtr: false,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: true,
-		kPtr: 1,
-	},{
-		fPtr: false,
-		uPtr: false,
-		rPtr: true,
-		oPtr: "test.o",
-		nPtr: true,
-		kPtr: 1,
-	},{
-		fPtr: false,
-		uPtr: false,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: false,
-		kPtr: 2,
-	},{
-		fPtr: false,
-		uPtr: true,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: false,
-		kPtr: 1,
-	},{
-		fPtr: false,
-		uPtr: false,
-		rPtr: false,
-		oPtr: "test.o",
-		nPtr: true,
-		kPtr: 1,
-	},
 
+	flags := []Flags{{
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  false,
+		isColomn:   1,
+	}, {
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  false,
+		isColomn:   1,
+	}, {
+		IsFold:     true,
+		IsUnique:   false,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  false,
+		isColomn:   1,
+	}, {
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: true,
+		OutputFile: "test.o",
+		IsNumbers:  false,
+		isColomn:   1,
+	}, {
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  true,
+		isColomn:   1,
+	}, {
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: true,
+		OutputFile: "test.o",
+		IsNumbers:  true,
+		isColomn:   1,
+	}, {
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  false,
+		isColomn:   2,
+	}, {
+		IsFold:     false,
+		IsUnique:   true,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  false,
+		isColomn:   1,
+	}, {
+		IsFold:     false,
+		IsUnique:   false,
+		IsReversed: false,
+		OutputFile: "test.o",
+		IsNumbers:  true,
+		isColomn:   1,
+	},
 	}
 
-	for i:=1; i < TestNum; i++ {
+	for i := 1; i < TestNum; i++ {
 		lines, err := ReadLines("tests/" + strconv.Itoa(i) + ".in")
 		if err != nil {
 			log.Println(err)

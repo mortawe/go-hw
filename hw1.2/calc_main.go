@@ -8,9 +8,7 @@ import (
 	"hw1.2/calc"
 )
 
-
-
-func main(){
+func main() {
 
 	if len(os.Args) == 0 {
 		log.Println("No input expression specified")
@@ -18,7 +16,7 @@ func main(){
 	}
 	expr := ""
 	for r := 1; r < len(os.Args); r++ {
-		expr+=os.Args[r]
+		expr += os.Args[r]
 	}
 	res, err := calc.Calculate(expr)
 	if err != nil {

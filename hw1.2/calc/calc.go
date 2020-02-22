@@ -7,20 +7,22 @@ import (
 	"strings"
 )
 
-func splitBrackets(tokens *[] string, bracketsNum *int, letter uint8) error {
+func splitBrackets(tokens *[]string, bracketsNum *int, letter uint8) error {
 	switch letter {
-	case '(' : *bracketsNum++
-	case ')' : *bracketsNum--
+	case '(':
+		*bracketsNum++
+	case ')':
+		*bracketsNum--
 	}
 	if *bracketsNum < 0 {
-		return  errors.New("wrong brackets sequence")
+		return errors.New("wrong brackets sequence")
 	}
 
-	if len(*tokens) >= 2 && (*tokens)[len(*tokens)-1] == "-" && (*tokens)[len(*tokens)- 2] == "("{
-		*tokens = append((*tokens)[:len(*tokens) - 1], append([]string{"0"}, (*tokens)[len(*tokens) - 1:]...)...)
+	if len(*tokens) >= 2 && (*tokens)[len(*tokens)-1] == "-" && (*tokens)[len(*tokens)-2] == "(" {
+		*tokens = append((*tokens)[:len(*tokens)-1], append([]string{"0"}, (*tokens)[len(*tokens)-1:]...)...)
 	}
 	if len(*tokens) == 1 && (*tokens)[0] == "-" {
-		*tokens = append( []string{"0"}, *tokens...)
+		*tokens = append([]string{"0"}, *tokens...)
 	}
 
 	*tokens = append(*tokens, string(letter))
@@ -28,14 +30,14 @@ func splitBrackets(tokens *[] string, bracketsNum *int, letter uint8) error {
 	return nil
 }
 
-func splitDigit(tokens *[] string, curNum *string, letter uint8) {
+func splitDigit(tokens *[]string, curNum *string, letter uint8) {
 	okCond := len(*tokens) < 2
 	if len(*tokens) >= 2 {
-		_, err := strconv.ParseFloat((*tokens)[len(*tokens) - 2], 64)
+		_, err := strconv.ParseFloat((*tokens)[len(*tokens)-2], 64)
 		if err == nil {
 			okCond = false
 		} else {
-			if (*tokens)[len(*tokens) - 2] == ")" {
+			if (*tokens)[len(*tokens)-2] == ")" {
 				okCond = false
 			} else {
 				okCond = true
@@ -44,16 +46,16 @@ func splitDigit(tokens *[] string, curNum *string, letter uint8) {
 	}
 	if *curNum == "" && okCond {
 		if len(*tokens) > 0 &&
-			( (*tokens)[len(*tokens) - 1] == "-" || (*tokens)[len(*tokens) - 1] == "+" ){
-			*curNum += (*tokens)[len(*tokens) - 1]
-			*tokens = (*tokens)[:len(*tokens) - 1]
+			((*tokens)[len(*tokens)-1] == "-" || (*tokens)[len(*tokens)-1] == "+") {
+			*curNum += (*tokens)[len(*tokens)-1]
+			*tokens = (*tokens)[:len(*tokens)-1]
 		}
 	}
 	*curNum += string(letter)
 }
 
-func splitTokens(expr string) ([]string,error) {
-	var tokens [] string
+func splitTokens(expr string) ([]string, error) {
+	var tokens []string
 	curNum := ""
 	bracketsNum := 0
 
@@ -62,17 +64,17 @@ func splitTokens(expr string) ([]string,error) {
 			continue
 		}
 		if expr[r] == '(' || expr[r] == ')' {
-			if curNum != ""  {
+			if curNum != "" {
 				tokens = append(tokens, curNum)
 				curNum = ""
 			}
-			err := splitBrackets(&tokens , &bracketsNum , expr[r])
-			if err!=nil {
+			err := splitBrackets(&tokens, &bracketsNum, expr[r])
+			if err != nil {
 				return nil, err
 			}
 			continue
 		}
-		if  _, err := strconv.Atoi(string(expr[r])); err == nil {
+		if _, err := strconv.Atoi(string(expr[r])); err == nil {
 			splitDigit(&tokens, &curNum, expr[r])
 			continue
 		}
@@ -86,7 +88,7 @@ func splitTokens(expr string) ([]string,error) {
 		if expr[r] == '+' || expr[r] == '-' || expr[r] == '/' || expr[r] == '*' {
 			if r >= 1 &&
 				(expr[r-1] == '+' || expr[r-1] == '-' ||
-				expr[r-1] == '/' || expr[r-1] == '*') {
+					expr[r-1] == '/' || expr[r-1] == '*') {
 				return nil, errors.New("wrong input: double sign")
 			}
 			if curNum != "" {
@@ -104,7 +106,7 @@ func splitTokens(expr string) ([]string,error) {
 	return tokens, nil
 }
 
-func calcSimpleExpr(tokens [] string) (string, error){
+func calcSimpleExpr(tokens []string) (string, error) {
 
 	if len(tokens) == 1 {
 		return tokens[0], nil
@@ -120,16 +122,16 @@ func calcSimpleExpr(tokens [] string) (string, error){
 		}
 		switch tokens[1] {
 		case "+":
-			return fmt.Sprintf("%f", left + right), nil
+			return fmt.Sprintf("%f", left+right), nil
 		case "-":
-			return fmt.Sprintf("%f", left - right), nil
+			return fmt.Sprintf("%f", left-right), nil
 		case "*":
-			return fmt.Sprintf("%f", left * right), nil
+			return fmt.Sprintf("%f", left*right), nil
 		case "/":
 			if right == 0.0 {
 				return "", errors.New("division by zero")
 			}
-			return fmt.Sprintf("%f", left / right), nil
+			return fmt.Sprintf("%f", left/right), nil
 		default:
 			return "", errors.New("could not calc simple expr because of strange operation")
 		}
@@ -141,25 +143,25 @@ func calcSimpleExpr(tokens [] string) (string, error){
 			if err != nil {
 				return "", err
 			}
-			tokens = append(append(tokens[:r-1],  result), tokens[r+2:]...)
+			tokens = append(append(tokens[:r-1], result), tokens[r+2:]...)
 			r = r - 2
 		}
 		r++
 	}
 	r = 0
-	for len(tokens) > 1 && r < len(tokens)  {
-			if tokens[r] == "+" || tokens[r] == "-" {
-				if r - 1 < 0 || r + 1 >= len(tokens) {
-					return "", errors.New("invalid expression : + or (bin) - in wrong places")
-				}
-				result, err := calcSimpleExpr(tokens[r-1 : r+2])
-				if err != nil {
-					return "", err
-				}
-				tokens = append(append(tokens[:r-1], result), tokens[r+2:]...)
-				r = r - 2
+	for len(tokens) > 1 && r < len(tokens) {
+		if tokens[r] == "+" || tokens[r] == "-" {
+			if r-1 < 0 || r+1 >= len(tokens) {
+				return "", errors.New("invalid expression : + or (bin) - in wrong places")
 			}
-			r++
+			result, err := calcSimpleExpr(tokens[r-1 : r+2])
+			if err != nil {
+				return "", err
+			}
+			tokens = append(append(tokens[:r-1], result), tokens[r+2:]...)
+			r = r - 2
+		}
+		r++
 	}
 
 	if len(tokens) == 1 {
@@ -168,13 +170,13 @@ func calcSimpleExpr(tokens [] string) (string, error){
 	return "", errors.New("could not calc simple expr")
 }
 
-func calcInsideBrackets(tokens [] string) (float64, error) {
+func calcInsideBrackets(tokens []string) (float64, error) {
 	containsBrackets := true
-	start, end, bracketsSum := 0, len(tokens) - 1, 0
+	start, end, bracketsSum := 0, len(tokens)-1, 0
 	for containsBrackets {
 		containsBrackets = false
 		bracketsSum = 0
-		for r:=0; r < len(tokens); r++ {
+		for r := 0; r < len(tokens); r++ {
 			if tokens[r] == "(" {
 				if bracketsSum == 0 {
 					start = r
@@ -187,7 +189,7 @@ func calcInsideBrackets(tokens [] string) (float64, error) {
 				bracketsSum--
 				if bracketsSum == 0 {
 					end = r
-					res, err := calcInsideBrackets(tokens[start+1:end])
+					res, err := calcInsideBrackets(tokens[start+1 : end])
 					if err != nil {
 						return 0.0, err
 					}
@@ -204,7 +206,6 @@ func calcInsideBrackets(tokens [] string) (float64, error) {
 
 	}
 
-
 	calcResult, err := calcSimpleExpr(tokens)
 	if err != nil {
 		return 0.0, err
@@ -217,7 +218,7 @@ func calcInsideBrackets(tokens [] string) (float64, error) {
 	return 0.0, errors.New("can not calc inside brackets")
 }
 
-func Calculate(expr string) (float64, error){
+func Calculate(expr string) (float64, error) {
 
 	tokens, err := splitTokens(expr)
 	if err != nil {
@@ -231,4 +232,3 @@ func Calculate(expr string) (float64, error){
 
 	return res, nil
 }
-
